@@ -2,9 +2,12 @@ node_modules/
 .token
 .env
 *.log
+.DS_Store
+Thumbs.db
 workspace/*
 !workspace/README.md
 data/
 saves/
 workspaces/
 sessions.json
+bin/

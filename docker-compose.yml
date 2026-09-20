@@ -1,0 +1,14 @@
+services:
+  super-coding:
+    build: .
+    network_mode: host
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      GROK_WEB_HOST: "0.0.0.0"
+      GROK_WEB_PORT: "8787"
+      GROK_BIN: /usr/local/bin/grok
+    volumes:
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
