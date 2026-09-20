@@ -1,0 +1,10 @@
+node_modules/
+.token
+.env
+*.log
+workspace/*
+!workspace/README.md
+data/
+saves/
+workspaces/
+sessions.json
