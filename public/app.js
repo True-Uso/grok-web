@@ -338,7 +338,7 @@ function send(msg) {
 function onMsg(msg) {
   switch (msg.type) {
     case "auth_required":
-      showGate("请先登录。");
+      location.replace("/?login=1");
       break;
     case "ready":
       hideGate();
@@ -350,6 +350,7 @@ function onMsg(msg) {
         state.provider = msg.provider;
         paintProviderForm();
       }
+      consumeHomeStart();
       send({ type: "list_sessions" });
       if (queuedPrompt && state.sessionId) flushQueuedPrompt();
       {
@@ -499,6 +500,25 @@ function onMsg(msg) {
       }
       break;
   }
+}
+
+function consumeHomeStart() {
+  let prompt = "";
+  let mode = "";
+  try {
+    prompt = sessionStorage.getItem("sc-home-prompt") || "";
+    mode = sessionStorage.getItem("sc-home-mode") || "";
+    sessionStorage.removeItem("sc-home-prompt");
+    sessionStorage.removeItem("sc-home-mode");
+  } catch {
+    /* ignore */
+  }
+  if (RUN_MODES.includes(mode)) applyRunMode(mode, { persist: true });
+  if (!prompt) return;
+  queuedPrompt = prompt;
+  resetWorkspaceUi();
+  clearTranscript("");
+  send({ type: "new_session", model: state.model });
 }
 
 function showGate(err) {
@@ -3311,10 +3331,9 @@ async function bootAuth() {
       return;
     }
   } catch {
-    /* show gate */
+    /* show home login */
   }
-  paintAccount();
-  showGate("");
+  location.replace("/?login=1");
 }
 
 async function submitAuth(username, password) {
@@ -3338,17 +3357,7 @@ async function logout() {
   } catch {
     /* ignore */
   }
-  state.user = null;
-  state.sessionId = null;
-  paintAccount();
-  resetWorkspaceUi();
-  clearTranscript("");
-  if (state.ws) {
-    state.ws.close();
-    state.ws = null;
-  }
-  closeSettings();
-  showGate("");
+  location.href = "/";
 }
 
 async function downloadProject() {

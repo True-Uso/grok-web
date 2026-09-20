@@ -15,7 +15,12 @@ npm install
 npm start
 ```
 
-打开 http://127.0.0.1:8787
+打开 http://127.0.0.1:8787 先看到主页。工作台在 `/app`。
+
+默认预置账号（可在 `.env` 改 `SC_BOOTSTRAP_USER` / `SC_BOOTSTRAP_PASS`）：
+
+- 账号 `admin`
+- 密码 `coding123`
 
 ## 服务器 Docker 部署
 

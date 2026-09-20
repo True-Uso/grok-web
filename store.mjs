@@ -123,6 +123,14 @@ export function openStore(file) {
       return { user: publicUser(row), token: createToken(Number(row.id)) };
     },
 
+    ensureUser(username, password) {
+      const name = String(username || "").trim();
+      const pass = String(password || "");
+      const existing = findUserByName.get(name);
+      if (existing) return publicUser(existing);
+      return this.register(name, pass).user;
+    },
+
     userByToken(token) {
       if (!token) return null;
       const row = findToken.get(String(token));

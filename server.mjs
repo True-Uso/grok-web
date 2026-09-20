@@ -27,6 +27,16 @@ const USERS_DIR = path.join(DATA, "users");
 const PUBLISHED = path.join(DATA, "published");
 const AUTH_COOKIE = "sc";
 const store = openStore(path.join(DATA, "app.sqlite"));
+{
+  const name = process.env.SC_BOOTSTRAP_USER || "admin";
+  const pass = process.env.SC_BOOTSTRAP_PASS || "coding123";
+  try {
+    const user = store.ensureUser(name, pass);
+    console.log("preset account", user.username);
+  } catch (err) {
+    console.error("preset account failed:", err.message);
+  }
+}
 const SKIP_DIRS = new Set([
   "node_modules",
   ".git",
@@ -1740,7 +1750,12 @@ const httpServer = createServer(async (req, res) => {
     }
     return;
   }
-  let filePath = path.join(PUBLIC, url.pathname === "/" ? "index.html" : url.pathname);
+  let filePath =
+    url.pathname === "/" || url.pathname === "/home"
+      ? path.join(PUBLIC, "home.html")
+      : url.pathname === "/app"
+        ? path.join(PUBLIC, "index.html")
+        : path.join(PUBLIC, url.pathname);
   if (!filePath.startsWith(PUBLIC)) {
     res.writeHead(403).end();
     return;
